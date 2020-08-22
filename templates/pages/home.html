@@ -1,7 +1,14 @@
-{% extends 'base.html' %} {% block content %} Welcome to my first Python
-Project!
+{% extends 'base.html' %} {% block content %}
 
-<div id="posts">
+<div class="row text-center">
+  <div class="col">
+    <h1>
+      Welcome to my first Python Project!
+    </h1>
+  </div>
+</div>
+
+<div class="row" id="posts">
   Loading...
 </div>
 
@@ -43,7 +50,7 @@ Project!
 
     const finalPostStr = listedItems.map((listedItem) => {
       return (
-        "<div class='mb-4 home__post' id='post__" +
+        "<div class='mb-4 home__post col-12 col-md-10 mx-auto border rounded py-3' id='post__" +
         listedItem.id +
         "'><p>" +
         listedItem.content +
