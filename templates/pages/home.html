@@ -27,7 +27,7 @@
 
 <script>
 
-  function handlePostFormError(msg, display){
+  const handlePostFormError = (msg, display) => {
     const myErrorDiv = document.getElementById("post-create-form-error")
     if (display === true) {
         myErrorDiv.setAttribute("class", "d-block alert alert-danger")
@@ -74,11 +74,15 @@
             } else {
                 alert("An error occured. Please try again.")
             }   
-        } else if (xhr.status === 500) {
+        } else if (xhr.status === 401) {
+            alert("You must login!")
+            window.location.href = "/login"
+        }
+        else if (xhr.status === 500) {
             alert("There was a server error, please try again.")
         }
     }
-    xhr.onerror = function() {
+    xhr.onerror = () => {
         alert("An error occurred. Please try again later.")
     }
     xhr.send(myFormData);
