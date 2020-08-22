@@ -32,12 +32,20 @@
     const myFormData = new FormData(myForm)
     const url = myForm.getAttribute("action")
     const method = myForm.getAttribute("method")
-    const xhr = new XMLHttpRequest();
-    xhr.open(method, url);
+    const xhr = new XMLHttpRequest()
+    const responseType = 'json';
+
+    xhr.responseType = responseType;
+    xhr.open(method, url)
+    xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
     xhr.onload = () => {
-      const serverResponse = xhr.response;
-      const postsEl = document.getElementById("posts");
-      loadPosts(postsEl);
+      if (xhr.status === 201) {
+        const newPostJson = xhr.response
+        const newPostContent = formatPostElement(newPostJson)
+
+      }
+      
 
     }
     xhr.send(myFormData);
@@ -48,7 +56,23 @@
 
   postCreateFormEl.addEventListener('submit', handlePostFormSubmit)
 
-  const postsEl = document.getElementById('posts');
+  const postsContainerElement = document.getElementById('posts');
+
+  const formatPostElement = (values) => {
+    const finalStr = values.map((value) => {
+        
+        return ( "<div class='mb-4 home__post col-12 col-md-10 mx-auto border rounded py-3' id='post__" +
+          value.id +
+          "'><p>" +
+          value.content +
+          "</p><div class='btn-group'>" +
+          LikeBtn(value) +
+          '</div></div>'
+        )
+      })
+    
+      return finalStr
+  }
 
   const loadPosts = (postsElement) => {
     const xhr = new XMLHttpRequest();
@@ -61,25 +85,13 @@
     xhr.onload = () => {
       const serverResponse = xhr.response;
       const listedItems = serverResponse.response;
-  
-      const finalPostStr = listedItems.map((listedItem) => {
-        return (
-          "<div class='mb-4 home__post col-12 col-md-10 mx-auto border rounded py-3' id='post__" +
-          listedItem.id +
-          "'><p>" +
-          listedItem.content +
-          "</p><div class='btn-group'>" +
-          LikeBtn(listedItem) +
-          '</div></div>'
-        );
-      });
-  
-      postsElement.innerHTML = finalPostStr;
+
+      postsElement.innerHTML = formatPostElement(listedItems);
     };
     xhr.send();
   }
 
-  loadPosts(postsEl)
+  loadPosts(postsContainerElement)
 
   const LikeBtn = (post) => {
     return (

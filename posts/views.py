@@ -20,6 +20,9 @@ def post_create_view(request, *args, **kwargs):
   if form.is_valid():
     obj = form.save(commit=False)
     obj.save()
+    if request.is_ajax():
+      return JsonResponse(obj.serialize(), status=201)
+
     if next_url != None and is_safe_url(next_url, ALLOWED_HOSTS):
       return redirect(next_url)
     form = PostForm()
@@ -27,7 +30,7 @@ def post_create_view(request, *args, **kwargs):
 
 def post_list_view(request, *args, **kwargs):
   qs = Post.objects.all()
-  posts_list = [{"id":x.id, "content":x.content, "likes": random.randint(0, 199)} for x in qs]
+  posts_list = [x.serialize() for x in qs]
   data = {
     "isUser": False,
     "response": posts_list
