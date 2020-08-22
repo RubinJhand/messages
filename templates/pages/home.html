@@ -12,6 +12,7 @@
   <div class='col-md-4 mx-auto col-10'>
     <form class='form' id='post-create-form' method="POST" action='/create-post'>
       {% csrf_token %}
+      <div class='d-none alert alert-danger' id='post-create-form-error'></div>
       <input type='hidden' value='/' name='next'/>
       <textarea required='required' class='form-control' name='content' placeholder='Post...'></textarea>
       <button type='submit' class='btn btn-primary'>Post</button>
@@ -25,6 +26,16 @@
 </div>
 
 <script>
+
+  function handlePostFormError(msg, display){
+    const myErrorDiv = document.getElementById("post-create-form-error")
+    if (display === true) {
+        myErrorDiv.setAttribute("class", "d-block alert alert-danger")
+        myErrorDiv.innerText = msg
+    } else {
+        myErrorDiv.setAttribute("class", "d-none alert alert-danger")
+    }
+}
 
   const handlePostFormSubmit = (e) => {
     e.preventDefault()
@@ -41,6 +52,7 @@
     xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
     xhr.onload = () => {
       if (xhr.status === 201) {
+        handlePostFormError("", false)
         const newPostJson = xhr.response
         const newPostElement = formatPostElement(newPostJson)
         const newPostHtml = postsContainerElement.innerHTML
@@ -48,7 +60,26 @@
         postsContainerElement.innerHTML = newPostElement + newPostHtml
         
         myForm.reset()
-      }
+      } else if (xhr.status === 400) {
+            const errorJson = xhr.response
+            const contentError = errorJson.content
+            let contentErrorMsg;
+            if (contentError) {
+                contentErrorMsg = contentError[0]
+                if (contentErrorMsg) {
+                    handlePostFormError(contentErrorMsg, true)
+                } else {
+                    alert("An error occured. Please try again.")
+                }
+            } else {
+                alert("An error occured. Please try again.")
+            }   
+        } else if (xhr.status === 500) {
+            alert("There was a server error, please try again.")
+        }
+    }
+    xhr.onerror = function() {
+        alert("An error occurred. Please try again later.")
     }
     xhr.send(myFormData);
   }
