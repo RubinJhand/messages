@@ -1,10 +1,13 @@
 import random
-
+from django.conf import settings
 from django.shortcuts import render, redirect
+from django.utils.http import is_safe_url
 from django.http import HttpResponse, Http404, JsonResponse
 
 from .forms import PostForm
 from .models import Post
+
+ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
 # Create your views here.
 def home_view(request, *args, **kwargs):
@@ -17,7 +20,7 @@ def post_create_view(request, *args, **kwargs):
   if form.is_valid():
     obj = form.save(commit=False)
     obj.save()
-    if next_url != None:
+    if next_url != None and is_safe_url(next_url, ALLOWED_HOSTS):
       return redirect(next_url)
     form = PostForm()
   return render(request, 'components/form.html', context={"form": form})

@@ -10,7 +10,7 @@
 
 <div class='row mb-3'>
   <div class='col-md-4 mx-auto col-10'>
-    <form class='form' method="POST" action='/create-post'>
+    <form class='form' id='post-create-form' method="POST" action='/create-post'>
       {% csrf_token %}
       <input type='hidden' value='/' name='next'/>
       <textarea class='form-control' name='content' placeholder='Post...'></textarea>
@@ -25,13 +25,61 @@
 </div>
 
 <script>
-  const postsElement = document.getElementById('posts');
-  // postsElement.innerHTML = 'Loading...';
 
-  const xhr = new XMLHttpRequest();
-  const method = 'GET';
-  const url = '/posts';
-  const responseType = 'json';
+  const handlePostFormSubmit = (e) => {
+    e.preventDefault()
+    const myForm = e.target
+    const myFormData = new FormData(myForm)
+    const url = myForm.getAttribute("action")
+    const method = myForm.getAttribute("method")
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.onload = () => {
+      const serverResponse = xhr.response;
+      const postsEl = document.getElementById("posts");
+      loadPosts(postsEl);
+
+    }
+    xhr.send(myFormData);
+
+  }
+
+  const postCreateFormEl = document.getElementById('post-create-form')
+
+  postCreateFormEl.addEventListener('submit', handlePostFormSubmit)
+
+  const postsEl = document.getElementById('posts');
+
+  const loadPosts = (postsElement) => {
+    const xhr = new XMLHttpRequest();
+    const method = 'GET';
+    const url = '/posts';
+    const responseType = 'json';
+
+    xhr.responseType = responseType;
+    xhr.open(method, url);
+    xhr.onload = () => {
+      const serverResponse = xhr.response;
+      const listedItems = serverResponse.response;
+  
+      const finalPostStr = listedItems.map((listedItem) => {
+        return (
+          "<div class='mb-4 home__post col-12 col-md-10 mx-auto border rounded py-3' id='post__" +
+          listedItem.id +
+          "'><p>" +
+          listedItem.content +
+          "</p><div class='btn-group'>" +
+          LikeBtn(listedItem) +
+          '</div></div>'
+        );
+      });
+  
+      postsElement.innerHTML = finalPostStr;
+    };
+    xhr.send();
+  }
+
+  loadPosts(postsEl)
 
   const LikeBtn = (post) => {
     return (
@@ -54,26 +102,5 @@
 
   // }
 
-  xhr.responseType = responseType;
-  xhr.open(method, url);
-  xhr.onload = () => {
-    const serverResponse = xhr.response;
-    const listedItems = serverResponse.response;
-
-    const finalPostStr = listedItems.map((listedItem) => {
-      return (
-        "<div class='mb-4 home__post col-12 col-md-10 mx-auto border rounded py-3' id='post__" +
-        listedItem.id +
-        "'><p>" +
-        listedItem.content +
-        "</p><div class='btn-group'>" +
-        LikeBtn(listedItem) +
-        '</div></div>'
-      );
-    });
-
-    postsElement.innerHTML = finalPostStr;
-  };
-  xhr.send();
 </script>
 {% endblock content %}
