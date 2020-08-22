@@ -43,6 +43,11 @@
       if (xhr.status === 201) {
         const newPostJson = xhr.response
         const newPostElement = formatPostElement(newPostJson)
+        const newPostHtml = postsContainerElement.innerHTML
+        
+        postsContainerElement.innerHTML = newPostElement + newPostHtml
+        
+        myForm.reset()
 
       }
       
@@ -59,19 +64,29 @@
   const postsContainerElement = document.getElementById('posts');
 
   const formatPostElement = (values) => {
-    const finalStr = values.map((value) => {
-        
-        return ( "<div class='mb-4 home__post col-12 col-md-10 mx-auto border rounded py-3' id='post__" +
+    if (values.length > 1) {
+    const formattedPost = values.map((value) => {
+        return (
+          "<div class='mb-4 home__post col-12 col-md-10 mx-auto border rounded py-3' id='post__" +
           value.id +
           "'><p>" +
           value.content +
           "</p><div class='btn-group'>" +
           LikeBtn(value) +
           '</div></div>'
-        )
+        );
       })
-    
-      return finalStr
+    return formattedPost
+    }
+    return (
+          "<div class='mb-4 home__post col-12 col-md-10 mx-auto border rounded py-3' id='post__" +
+          values.id +
+          "'><p>" +
+          values.content +
+          "</p><div class='btn-group'>" +
+          LikeBtn(values) +
+          '</div></div>'
+        );
   }
 
   const loadPosts = (postsElement) => {
@@ -89,7 +104,8 @@
       postsElement.innerHTML = formatPostElement(listedItems);
     };
     xhr.send();
-  }
+  };
+  
 
   loadPosts(postsContainerElement)
 
@@ -109,10 +125,6 @@
     console.log(post_id, currentCount);
     return;
   };
-
-  // const formatPostElement = (post) => {
-
-  // }
 
 </script>
 {% endblock content %}
