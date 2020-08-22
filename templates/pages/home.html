@@ -1,2 +1,40 @@
 {% extends 'base.html' %} {% block content %} Welcome to my first Python
-Project! {% endblock content %}
+Project!
+
+<div id="posts">
+  Loading...
+</div>
+
+<script>
+  const postsElement = document.getElementById('posts');
+  // postsElement.innerHTML = 'Loading...';
+
+  const xhr = new XMLHttpRequest();
+  const method = 'GET';
+  const url = '/posts';
+  const responseType = 'json';
+
+  xhr.responseType = responseType;
+  xhr.open(method, url);
+  xhr.onload = () => {
+    const serverResponse = xhr.response;
+    const listedItems = serverResponse.response;
+
+    const finalPostStr = listedItems.map((listedItem) => {
+      console.log('map:>>', listedItem);
+      return (
+        '<div><h1>' +
+        listedItem.id +
+        '</h1>' +
+        '<p>' +
+        listedItem.content +
+        '</p></div>'
+      );
+    });
+
+    postsElement.innerHTML = finalPostStr;
+    console.log('listed items:>>', listedItems);
+  };
+  xhr.send();
+</script>
+{% endblock content %}
