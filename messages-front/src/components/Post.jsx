@@ -1,5 +1,7 @@
 import React from 'react';
 
+import ActionBtn from './ActionBtn';
+
 function Post(props) {
   const { post } = props;
   const className = props.className
@@ -10,6 +12,11 @@ function Post(props) {
       <p>
         {post.id} - {post.content}
       </p>
+      <div className='btn btn-group'>
+        <ActionBtn post={post} action={{ type: 'like', display: 'Likes' }} />
+        <ActionBtn post={post} action={{ type: 'unlike', display: 'Unlike' }} />
+        <ActionBtn post={post} action={{ type: 'repost', display: '' }} />
+      </div>
     </div>
   );
 }
