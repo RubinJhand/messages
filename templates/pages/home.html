@@ -8,19 +8,27 @@
   </div>
 </div>
 
-<div class='row mb-3'>
-  <div class='col-md-4 mx-auto col-10'>
-    <form class='form' id='post-create-form' method="POST" action='/create-post'>
-
+<div class="row mb-3">
+  <div class="col-md-4 mx-auto col-10">
+    <form
+      class="form"
+      id="post-create-form"
+      method="POST"
+      action="/create-post"
+    >
       {% csrf_token %}
-      
-      <div class='d-none alert alert-danger' id='post-create-form-error'></div>
-      <input type='hidden' value='/' name='next'/>
-      <textarea required='required' class='form-control' name='content' placeholder='Post...'></textarea>
-      <button type='submit' class='btn btn-primary'>Post</button>
-    </form>
 
-  </div class='col-md-4'>
+      <div class="d-none alert alert-danger" id="post-create-form-error"></div>
+      <input type="hidden" value="/" name="next" />
+      <textarea
+        required="required"
+        class="form-control"
+        name="content"
+        placeholder="Post..."
+      ></textarea>
+      <button type="submit" class="btn btn-primary">Post</button>
+    </form>
+  </div>
 </div>
 
 <div class="row" id="posts">
@@ -28,77 +36,75 @@
 </div>
 
 <script>
-
   const handlePostFormError = (msg, display) => {
-    const myErrorDiv = document.getElementById("post-create-form-error")
+    const myErrorDiv = document.getElementById('post-create-form-error');
     if (display === true) {
-        myErrorDiv.setAttribute("class", "d-block alert alert-danger")
-        myErrorDiv.innerText = msg
+      myErrorDiv.setAttribute('class', 'd-block alert alert-danger');
+      myErrorDiv.innerText = msg;
     } else {
-        myErrorDiv.setAttribute("class", "d-none alert alert-danger")
+      myErrorDiv.setAttribute('class', 'd-none alert alert-danger');
     }
-}
+  };
 
   const handlePostFormSubmit = (e) => {
-    e.preventDefault()
-    const myForm = e.target
-    const myFormData = new FormData(myForm)
-    const url = myForm.getAttribute("action")
-    const method = myForm.getAttribute("method")
-    const xhr = new XMLHttpRequest()
+    e.preventDefault();
+    const myForm = e.target;
+    const myFormData = new FormData(myForm);
+    const url = myForm.getAttribute('action');
+    const method = myForm.getAttribute('method');
+    const xhr = new XMLHttpRequest();
     const responseType = 'json';
 
     xhr.responseType = responseType;
-    xhr.open(method, url)
-    xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
-    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+    xhr.open(method, url);
+    xhr.setRequestHeader('HTTP_X_REQUESTED_WITH', 'XMLHttpRequest');
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.onload = () => {
       if (xhr.status === 201) {
-        handlePostFormError("", false)
-        const newPostJson = xhr.response
-        const newPostElement = formatPostElement(newPostJson)
-        const newPostHtml = postsContainerElement.innerHTML
-        
-        postsContainerElement.innerHTML = newPostElement + newPostHtml
-        
-        myForm.reset()
+        handlePostFormError('', false);
+        const newPostJson = xhr.response;
+        const newPostElement = formatPostElement(newPostJson);
+        const newPostHtml = postsContainerElement.innerHTML;
+
+        postsContainerElement.innerHTML = newPostElement + newPostHtml;
+
+        myForm.reset();
       } else if (xhr.status === 400) {
-            const errorJson = xhr.response
-            const contentError = errorJson.content
-            let contentErrorMsg;
-            if (contentError) {
-                contentErrorMsg = contentError[0]
-                if (contentErrorMsg) {
-                    handlePostFormError(contentErrorMsg, true)
-                } else {
-                    alert("An error occured. Please try again.")
-                }
-            } else {
-                alert("An error occured. Please try again.")
-            }   
-        } else if (xhr.status === 401) {
-            alert("You must login!")
-            window.location.href = "/login"
+        const errorJson = xhr.response;
+        const contentError = errorJson.content;
+        let contentErrorMsg;
+        if (contentError) {
+          contentErrorMsg = contentError[0];
+          if (contentErrorMsg) {
+            handlePostFormError(contentErrorMsg, true);
+          } else {
+            alert('An error occured. Please try again.');
+          }
+        } else {
+          alert('An error occured. Please try again.');
         }
-        else if (xhr.status === 500) {
-            alert("There was a server error, please try again.")
-        }
-    }
+      } else if (xhr.status === 401) {
+        alert('You must login!');
+        window.location.href = '/login';
+      } else if (xhr.status === 500) {
+        alert('There was a server error, please try again.');
+      }
+    };
     xhr.onerror = () => {
-        alert("An error occurred. Please try again later.")
-    }
+      alert('An error occurred. Please try again later.');
+    };
     xhr.send(myFormData);
-  }
+  };
 
-  const postCreateFormEl = document.getElementById('post-create-form')
+  const postCreateFormEl = document.getElementById('post-create-form');
 
-  postCreateFormEl.addEventListener('submit', handlePostFormSubmit)
+  postCreateFormEl.addEventListener('submit', handlePostFormSubmit);
 
   const postsContainerElement = document.getElementById('posts');
 
   const formatPostElement = (values) => {
     if (values.length > 1) {
-    const formattedPost = values.map((value) => {
+      const formattedPost = values.map((value) => {
         return (
           "<div class='mb-4 home__post col-12 col-md-10 mx-auto border rounded py-3' id='post__" +
           value.id +
@@ -108,19 +114,19 @@
           LikeBtn(value) +
           '</div></div>'
         );
-      })
-    return formattedPost
+      });
+      return formattedPost;
     }
     return (
-          "<div class='mb-4 home__post col-12 col-md-10 mx-auto border rounded py-3' id='post__" +
-          values.id +
-          "'><p>" +
-          values.content +
-          "</p><div class='btn-group'>" +
-          LikeBtn(values) +
-          '</div></div>'
-        );
-  }
+      "<div class='mb-4 home__post col-12 col-md-10 mx-auto border rounded py-3' id='post__" +
+      values.id +
+      "'><p>" +
+      values.content +
+      "</p><div class='btn-group'>" +
+      LikeBtn(values) +
+      '</div></div>'
+    );
+  };
 
   const loadPosts = (postsElement) => {
     const xhr = new XMLHttpRequest();
@@ -132,15 +138,14 @@
     xhr.open(method, url);
     xhr.onload = () => {
       const serverResponse = xhr.response;
-      const listedItems = serverResponse.response;
+      const listedItems = serverResponse;
 
       postsElement.innerHTML = formatPostElement(listedItems);
     };
     xhr.send();
   };
-  
 
-  loadPosts(postsContainerElement)
+  loadPosts(postsContainerElement);
 
   const LikeBtn = (post) => {
     return (
@@ -158,6 +163,5 @@
     console.log(post_id, currentCount);
     return;
   };
-
 </script>
 {% endblock content %}
