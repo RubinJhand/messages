@@ -61,28 +61,30 @@ def post_delete_view(request, post_id, *args, **kwargs):
 def post_action_view(request, *args, **kwargs):
   serializer = PostActionSerializer(data=request.data)
   if serializer.is_valid(raise_exception=True):
-      data = serializer.validated_data
-      post_id = data.get("id")
-      action = data.get("action")
-      content = data.get("content")
-      qs = Post.objects.filter(id=post_id)
-      if not qs.exists():
-          return Response({}, status=404)
-      obj = qs.first()
-      if action == "like":
-          obj.likes.add(request.user)
-          serializer = PostSerializer(obj)
-          return Response(serializer.data, status=200)
-      elif action == "unlike":
-          obj.likes.remove(request.user)
-      elif action == "repost":
-        new_post = Post.objects.create(
-                user=request.user, 
-                parent=obj,
-                content=content,
-                )
-        serializer = PostSerializer(new_post)
+    data = serializer.validated_data
+    post_id = data.get("id")
+    action = data.get("action")
+    content = data.get("content")
+    qs = Post.objects.filter(id=post_id)
+    if not qs.exists():
+        return Response({}, status=404)
+    obj = qs.first()
+    if action == "like":
+        obj.likes.add(request.user)
+        serializer = PostSerializer(obj)
         return Response(serializer.data, status=200)
+    elif action == "unlike":
+        obj.likes.remove(request.user)
+        serializer = PostSerializer(obj)
+        return Response(serializer.data, status=200)
+    elif action == "repost":
+      new_post = Post.objects.create(
+              user=request.user, 
+              parent=obj,
+              content=content,
+              )
+      serializer = PostSerializer(new_post)
+      return Response(serializer.data, status=201)
   return Response({}, status=200)
 
 @api_view(['GET'])
