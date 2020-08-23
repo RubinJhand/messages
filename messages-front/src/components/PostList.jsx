@@ -3,12 +3,20 @@ import React, { useState, useEffect } from 'react';
 import { loadPosts } from './helpers/loadPosts';
 import Post from './Post';
 
-function PostList() {
+function PostList(props) {
   const [posts, setPosts] = useState([]);
+  const [postsInit, setPostsInit] = useState([]);
 
   useEffect(() => {
-    loadPosts(setPosts);
-  }, []);
+    const final = [...props.newPosts].concat(postsInit);
+    if (final.length !== posts.length) {
+      setPosts(final);
+    }
+  }, [props.newPosts, posts, postsInit]);
+
+  useEffect(() => {
+    loadPosts(setPostsInit);
+  }, [postsInit]);
 
   return posts.map((item, index) => {
     return (

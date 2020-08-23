@@ -1,6 +1,6 @@
 import React from 'react';
 
-import PostList from './components/PostList';
+import PostForm from './components/PostForm';
 
 import logo from './logo.svg';
 import './App.css';
@@ -12,7 +12,7 @@ function App() {
         <img src={logo} className='App-logo' alt='logo' />
 
         <div>
-          <PostList />
+          <PostForm />
         </div>
       </header>
     </div>
