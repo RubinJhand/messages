@@ -1,13 +1,10 @@
 // import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
+
+import { findPosts } from './findPosts';
 
 const loadPosts = (props) => {
-  async function fetchData() {
-    const request = await axios.get('http://localhost:8000/api/posts', {});
-
-    props(request.data);
-  }
-  fetchData();
+  findPosts('GET', '/posts/', props);
 };
 
 export { loadPosts };
