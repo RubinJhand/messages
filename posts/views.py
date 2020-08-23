@@ -4,7 +4,10 @@ from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url
 from django.http import HttpResponse, Http404, JsonResponse
 
-from rest_framework.decorators import api_view
+# from rest_framework.decorators import api_view
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .forms import PostForm
 from .models import Post
@@ -17,6 +20,7 @@ def home_view(request, *args, **kwargs):
   return render(request, "pages/home.html", context={}, status=200)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def post_create_view(request, *args, **kwargs):
   serializer = PostSerializer(data=request.POST)
   if serializer.is_valid(raise_exception=True):
@@ -28,7 +32,7 @@ def post_create_view(request, *args, **kwargs):
 def post_detail_view(request, post_id, *args, **kwargs):
     qs = Post.objects.filter(id=post_id)
     if not qs.exists():
-        return Reponse({}, status=404)
+        return Response({}, status=404)
     obj = qs.first()
     serializer = PostSerializer(obj)
     return Response(serializer.data, status=200)
