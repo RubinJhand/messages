@@ -6,6 +6,7 @@ import Post from './Post';
 function PostList(props) {
   const [posts, setPosts] = useState([]);
   const [postsInit, setPostsInit] = useState([]);
+  const [postsDidSet, setPostsDidSet] = useState(false);
 
   useEffect(() => {
     const final = [...props.newPosts].concat(postsInit);
@@ -15,8 +16,11 @@ function PostList(props) {
   }, [props.newPosts, posts, postsInit]);
 
   useEffect(() => {
-    loadPosts(setPostsInit);
-  }, [postsInit]);
+    if (!postsDidSet) {
+      loadPosts(setPostsInit);
+      setPostsDidSet(true);
+    }
+  }, [postsInit, postsDidSet, setPostsDidSet]);
 
   return posts.map((item, index) => {
     return (
