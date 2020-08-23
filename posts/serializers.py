@@ -7,7 +7,7 @@ MAX_POST_LENGTH = settings.MAX_POST_LENGTH
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['content']
+        fields = ['id', 'content']
 
     def validate_content(self, value):
         if len(value) > MAX_POST_LENGTH:
