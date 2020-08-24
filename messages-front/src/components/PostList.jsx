@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { loadPosts } from './helpers/loadPosts';
+import { apiLoadPosts } from './helpers/apiLoadPosts';
 import Post from './Post';
 
 function PostList(props) {
@@ -17,7 +17,7 @@ function PostList(props) {
 
   useEffect(() => {
     if (!postsDidSet) {
-      loadPosts(setPostsInit);
+      apiLoadPosts(setPostsInit);
       setPostsDidSet(true);
     }
   }, [postsInit, postsDidSet, setPostsDidSet]);

@@ -1,30 +1,25 @@
 import React, { useState } from 'react';
 
 import PostList from './PostList';
-import { findPosts } from './helpers/findPosts';
+import { apiCreatePost } from './helpers/apiCreatePost';
 
 function PostForm(props) {
   const textAreaRef = React.createRef();
 
   const [newPosts, setNewPosts] = useState([]);
 
-  const backendUpdate = (response, status) => {
+  const backendUpdate = (response) => {
     let posts = [...newPosts];
-    console.log(response);
     posts.unshift(response);
     setNewPosts(posts);
-    console.log('bUp:>>', response);
-  };
-
-  const createPost = (newPost, cb) => {
-    findPosts('POST', '/posts/create', cb, newPost);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const newComment = textAreaRef.current.value;
-    createPost(newComment, backendUpdate);
+
+    apiCreatePost(newComment, backendUpdate);
     textAreaRef.current.value = '';
   };
 
