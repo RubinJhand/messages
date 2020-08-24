@@ -1,26 +1,33 @@
 import React, { useState } from 'react';
 
 import PostList from './PostList';
+import { findPosts } from './helpers/findPosts';
 
 function PostForm(props) {
   const textAreaRef = React.createRef();
 
   const [newPosts, setNewPosts] = useState([]);
 
+  const backendUpdate = (response, status) => {
+    let posts = [...newPosts];
+    console.log(response);
+    posts.unshift(response);
+    setNewPosts(posts);
+    console.log('bUp:>>', response);
+  };
+
+  const createPost = (newPost, cb) => {
+    findPosts('POST', '/posts/create', cb, newPost);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const newComment = textAreaRef.current.value;
-    let tempNewPosts = [...newPosts];
-    tempNewPosts.unshift({
-      content: newComment,
-      likes: 0,
-      id: 12313
-    });
-    setNewPosts(tempNewPosts);
-
+    createPost(newComment, backendUpdate);
     textAreaRef.current.value = '';
   };
+
   return (
     <div className={props.className}>
       <div className='col-12 mb-3'>
