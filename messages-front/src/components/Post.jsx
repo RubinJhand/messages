@@ -15,7 +15,7 @@ function Post(props) {
       <div className='btn btn-group'>
         <ActionBtn post={post} action={{ type: 'like', display: 'Likes' }} />
         <ActionBtn post={post} action={{ type: 'unlike', display: 'Unlike' }} />
-        <ActionBtn post={post} action={{ type: 'repost', display: '' }} />
+        <ActionBtn post={post} action={{ type: 'repost', display: 'RePost' }} />
       </div>
     </div>
   );

@@ -21,16 +21,31 @@ const apiCRUD = (method, endpoint, props, content) => {
         });
     }
     if (method === 'POST') {
-      axios
-        .post(`http://localhost:8000/api${endpoint}`, {
-          content: content
-        })
-        .then(function (response) {
-          props(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      if (!content.id) {
+        axios
+          .post(`http://localhost:8000/api${endpoint}`, {
+            content: content
+          })
+          .then(function (response) {
+            props(response.data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      } else {
+        console.log(content);
+        axios
+          .post(`http://localhost:8000/api${endpoint}`, {
+            id: content.id,
+            action: content.action
+          })
+          .then(function (response) {
+            props(response.data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
     }
   }
   fetchData();
