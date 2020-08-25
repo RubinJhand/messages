@@ -7,6 +7,7 @@ axios.defaults.xsrfCookieName = 'csrftoken';
 const csrftoken = Cookies.get('csrftoken');
 
 const apiCRUD = (method, endpoint, props, content) => {
+  console.log('props:>>', props);
   async function fetchData() {
     if (method === 'GET') {
       axios

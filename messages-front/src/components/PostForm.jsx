@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-import PostList from './PostList';
+// import PostList from './PostList';
+// import Feed from './Feed';
 import { apiCreatePost } from './helpers/apiCreatePost';
 
 function PostForm(props) {
@@ -38,7 +39,8 @@ function PostForm(props) {
           </button>
         </form>
       </div>
-      <PostList newPosts={newPosts} />
+      {/* <PostList newPosts={newPosts} /> */}
+      {/* <Feed newPosts={newPosts} /> */}
     </div>
   );
 }

@@ -1,13 +1,18 @@
 import React from 'react';
 
-import PostForm from './components/PostForm';
+import Sidebar from './components/Sidebar';
+import Widgets from './components/Widgets';
 
 import './App.css';
+import TweetBox from './components/TweetBox';
 
 function App() {
   return (
     <div className='app'>
-      <PostForm />
+      <Sidebar />
+
+      <TweetBox />
+      <Widgets />
     </div>
   );
 }
